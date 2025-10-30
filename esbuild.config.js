@@ -26,6 +26,8 @@ const userscriptHeader = `// ==UserScript==
 // @match        https://*.transpornstarharem.com/*
 // @match        https://*.gaypornstarharem.com/*
 // @match        https://*.mangarpg.com/*
+// @updateURL    https://github.com/infarcactus-HH/BoobStrapper/raw/refs/heads/main/dist/userscript.user.js
+// @downloadURL  https://github.com/infarcactus-HH/BoobStrapper/raw/refs/heads/main/dist/userscript.user.js
 // @grant        unsafeWindow
 // @grant        GM_getValue
 // @grant        GM_setValue

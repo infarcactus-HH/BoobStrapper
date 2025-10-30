@@ -1,4 +1,7 @@
 # BoobStrapper is a replacement of script toggling & loading from HH++ BDSM
+
+Donwload here : https://github.com/infarcactus-HH/BoobStrapper/raw/refs/heads/main/dist/userscript.user.js
+
 It's just here to simulate what HH++ BDSM does for loading & registering scripts & does **not** support running alongside HH++ BDSM
 
 It's **not** a 100% replacement of HH++ BDSM some feature are not included so some scripts may still break even with this.
