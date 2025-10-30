@@ -1,0 +1,52 @@
+.hh-plus-plus-config-button {
+  position: absolute;
+  right: 50px;
+  cursor: pointer;
+  background-size: contain;
+  background-image: var(--config-button-icon);
+  z-index: 5;
+}
+
+@media (min-width: 1026px) {
+  .hh-plus-plus-config-button {
+    height: 35px;
+    width: 35px;
+    top: 56px;
+  }
+}
+@media (max-width: 1025px) {
+  .hh-plus-plus-config-button {
+    height: 64px;
+    width: 64px;
+    top: 85px;
+  }
+}
+
+@media (min-width: 1026px) {
+  .hh-plus-plus-config-button:after {
+    font-size: 20px;
+    height: 20px;
+    line-height: 20px;
+  }
+}
+@media (max-width: 1025px) {
+  .hh-plus-plus-config-button:after {
+    font-size: 35px;
+    height: 40px;
+    line-height: 46px;
+  }
+}
+
+.hh-plus-plus-config-button:after {
+  content: "BS";
+  position: absolute;
+  width: auto;
+  bottom: -3px;
+  right: -5px;
+  text-shadow: 0 0 1px #000, 0 0 1px #000, 0 0 1px #000, 0 0 1px #000,
+    0 0 1px #000, 0 0 1px #000, 0 0 1px #000, 0 0 1px #000, 0 0 1px #000,
+    0 0 1px #000, 0 0 1px #000;
+  -webkit-transform: rotate(-18.95deg);
+  -moz-transform: rotate(-18.95deg);
+  transform: rotate(-18.95deg);
+}

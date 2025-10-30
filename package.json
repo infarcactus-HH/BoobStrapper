@@ -1,0 +1,25 @@
+{
+  "name": "boobstrapper",
+  "author": "infarcactus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/userscript.user.js",
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "watch": "node esbuild.config.js --watch",
+    "dev": "pnpm run watch"
+  },
+  "keywords": [
+    "userscript",
+    "typescript",
+    "HH"
+  ],
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jquery": "^3.5.0",
+    "@types/node": "^24.5.2",
+    "esbuild": "^0.25.10",
+    "terser": "^5.44.0",
+    "typescript": "^5.0.0"
+  }
+}
