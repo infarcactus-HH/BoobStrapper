@@ -4,7 +4,7 @@ export function isRegisterGroupType(
   return obj.key && obj.name;
 }
 
-export function isRegisterModuleType(obj: any): obj is moduleType {
+export function isRegisterModuleType(obj: any): obj is moduleBDSMType {
   return (
     obj.group &&
     obj.configSchema &&
@@ -15,7 +15,7 @@ export function isRegisterModuleType(obj: any): obj is moduleType {
   );
 }
 
-export type moduleType = {
+export type moduleBDSMType = {
   group: string;
   configSchema: {
     baseKey: string;

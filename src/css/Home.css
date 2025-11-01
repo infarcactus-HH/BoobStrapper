@@ -1,6 +1,6 @@
-.hh-plus-plus-config-button {
+.hh-plus-plus-config-button.boob-strapped {
   position: absolute;
-  right: 50px;
+  right: 200px;
   cursor: pointer;
   background-size: contain;
   background-image: var(--config-button-icon);
@@ -8,36 +8,37 @@
 }
 
 @media (min-width: 1026px) {
-  .hh-plus-plus-config-button {
+  .hh-plus-plus-config-button.boob-strapped {
     height: 35px;
     width: 35px;
     top: 56px;
   }
 }
 @media (max-width: 1025px) {
-  .hh-plus-plus-config-button {
+  .hh-plus-plus-config-button.boob-strapped {
     height: 64px;
     width: 64px;
     top: 85px;
+    right: 140px;
   }
 }
 
 @media (min-width: 1026px) {
-  .hh-plus-plus-config-button:after {
+  .hh-plus-plus-config-button.boob-strapped:after {
     font-size: 20px;
     height: 20px;
     line-height: 20px;
   }
 }
 @media (max-width: 1025px) {
-  .hh-plus-plus-config-button:after {
+  .hh-plus-plus-config-button.boob-strapped:after {
     font-size: 35px;
     height: 40px;
     line-height: 46px;
   }
 }
 
-.hh-plus-plus-config-button:after {
+.hh-plus-plus-config-button.boob-strapped:after {
   content: "BS";
   position: absolute;
   width: auto;

@@ -1,4 +1,4 @@
-.hh-plus-plus-config-panel {
+.hh-plus-plus-config-panel.boob-strapper {
   background: linear-gradient(to top, #572332 0, #572332 1%, #2c1e1c 100%);
   border-image-slice: 1;
   border-image-source: linear-gradient(180deg, #ffa23e, #c41b53);
@@ -14,11 +14,11 @@
   z-index: 100;
 }
 
-.hh-plus-plus-config-panel.shown {
+.hh-plus-plus-config-panel.boob-strapper.shown {
   display: block;
 }
 
-.close-config-panel {
+.hh-plus-plus-config-panel.boob-strapper .close-config-panel {
   background-image: var(--cross-icon);
   background-size: cover;
   cursor: pointer;
@@ -30,14 +30,14 @@
   width: 41px;
 }
 
-.hh-plus-plus-config-panel .tabs {
+.hh-plus-plus-config-panel.boob-strapper .tabs {
   display: flex;
   height: 2.5rem;
   max-width: 53rem;
   white-space: nowrap;
 }
 
-.tabs h4 {
+.hh-plus-plus-config-panel.boob-strapper .tabs h4 {
   color: #d08467;
   cursor: pointer;
   display: block;
@@ -54,11 +54,11 @@
     1px -1px 0 #000;
 }
 
-.tabs h4:first-child {
-  margin-left: 30px;
+.hh-plus-plus-config-panel.boob-strapper .tabs h4:first-child {
+  margin-left: 15px;
 }
 
-.tabs h4.selected {
+.hh-plus-plus-config-panel.boob-strapper .tabs h4.selected {
   color: #ffb827;
   cursor: initial;
   font-size: 20px;
@@ -72,7 +72,7 @@
     2px 2px 5px rgba(255, 159, 0, 0.4), 0 0 10px rgba(255, 159, 0, 0.4);
 }
 
-.hh-plus-plus-config-panel .group-panel {
+.hh-plus-plus-config-panel.boob-strapper .group-panel {
   display: none;
   height: 405px;
   position: absolute;
@@ -80,11 +80,11 @@
   width: 889px;
 }
 
-.hh-plus-plus-config-panel .group-panel.shown {
+.hh-plus-plus-config-panel.boob-strapper .group-panel.shown {
   display: block;
 }
 
-.hh-plus-plus-config-panel .group-panel .panel-contents {
+.hh-plus-plus-config-panel.boob-strapper .group-panel .panel-contents {
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(5, 1fr);
@@ -94,7 +94,7 @@
   width: 100%;
 }
 
-.hh-plus-plus-config-panel .config-setting {
+.hh-plus-plus-config-panel.boob-strapper .config-setting {
   background: rgba(32, 3, 7, 0.9);
   border: 1px solid #aaa;
   border-radius: 6px;
@@ -104,42 +104,42 @@
   padding: 7px;
 }
 
-.hh-plus-plus-config-panel .config-setting.enabled {
+.hh-plus-plus-config-panel.boob-strapper .config-setting.enabled {
   border-color: #ffb827;
 }
 
-.hh-plus-plus-config-panel .config-setting.has-subsettings {
+.hh-plus-plus-config-panel.boob-strapper .config-setting.has-subsettings {
   grid-row-end: span 2;
 }
 
-.hh-plus-plus-config-panel .base-setting {
+.hh-plus-plus-config-panel.boob-strapper .base-setting {
   display: flex;
 }
 
-.hh-plus-plus-config-panel .base-setting span {
+.hh-plus-plus-config-panel.boob-strapper .base-setting span {
   flex: 1;
 }
 
-.hh-plus-plus-config-panel .sub-settings {
+.hh-plus-plus-config-panel.boob-strapper .sub-settings {
   font-size: 12px;
   margin-top: 8px;
 }
 
-.hh-plus-plus-config-panel .sub-settings label {
+.hh-plus-plus-config-panel.boob-strapper .sub-settings label {
   align-items: center;
   display: flex;
   margin-bottom: 6px;
 }
 
-.hh-plus-plus-config-panel .sub-settings label span {
+.hh-plus-plus-config-panel.boob-strapper .sub-settings label span {
   flex: 1;
 }
 
-.hh-plus-plus-config-panel .sub-settings label input {
+.hh-plus-plus-config-panel.boob-strapper .sub-settings label input {
   margin-left: 0;
 }
 
-.hh-plus-plus-config-panel .sub-settings label input[disabled] {
+.hh-plus-plus-config-panel.boob-strapper .sub-settings label input[disabled] {
   background-color: initial;
   box-shadow: unset;
   -webkit-box-shadow: unset;

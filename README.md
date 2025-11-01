@@ -2,12 +2,11 @@
 
 Donwload here : https://github.com/infarcactus-HH/BoobStrapper/raw/refs/heads/main/dist/userscript.user.js
 
-It's just here to simulate what HH++ BDSM does for loading & registering scripts & does **not** support running alongside HH++ BDSM
+It's just here to simulate what HH++ BDSM does for loading & registering scripts (if you already have BDSM just disable the emulation in BoobStrapper settings)
 
 It's **not** a 100% replacement of HH++ BDSM some feature are not included so some scripts may still break even with this.
 
-For now it's not aimed to be more than just a replacement of HH++ script toggling  
-This may change in the future
+It's planned to grow more than just a simple emulation of HH++ BDSM
 
 ### Why did I make this ?
 Me and others didn't want to make our own script toggling specificly for people that didn't use HH++ bdsm
