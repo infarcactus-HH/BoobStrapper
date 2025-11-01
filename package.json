@@ -7,7 +7,8 @@
   "scripts": {
     "build": "node esbuild.config.js",
     "watch": "node esbuild.config.js --watch",
-    "dev": "pnpm run watch"
+    "dev": "pnpm run watch",
+    "version": "pnpm run build && git add dist/userscript.user.js"
   },
   "keywords": [
     "userscript",
