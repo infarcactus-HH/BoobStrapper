@@ -6,7 +6,7 @@ export default class BoobStrapBDSM {
   configSchema = {
     baseKey: "boobStrapBDSM",
     label: "Emulate HH++ BDSM",
-    default: true,
+    default: false,
   };
   run() {
     if (this.hasRun) return;

@@ -3,11 +3,17 @@ import {
   isRegisterGroupType,
   isRegisterModuleType,
   type moduleBDSMType,
+  type RegisterGroupType,
 } from "./typeCheck";
 import HomeCss from "./css/Home.css";
 import Helpers from "./Helpers";
 import cssBaseVars from "./css/addBaseVars";
 import cssConfigPannel from "./css/ConfigPannel.css";
+
+type ModuleSettingsSnapshot = {
+  enabled: boolean;
+  subSettings: Record<string, boolean>;
+};
 
 export default class BoobStrapper {
   constructor() {
@@ -15,6 +21,8 @@ export default class BoobStrapper {
       registerGroup: this.registerGroup.bind(this),
       registerModule: this.registerModule.bind(this),
       runModules: this.runModules.bind(this),
+      getModuleSettings: this.getModuleSettings.bind(this),
+      getAllSettings: this.getAllSettings.bind(this),
     };
     unsafeWindow.BoobStrapper = {
       Helpers: {
@@ -24,91 +32,174 @@ export default class BoobStrapper {
     if (location.pathname === "/home.html") {
       this.addConfigToggles();
     }
+    $(document).trigger("boobstrapper:loaded");
   }
-  groups: Array<{ key: string; name: string }> = [];
-  modules: Array<moduleBDSMType> = [];
-  config: Record<string, boolean> = {};
+  private groups = new Map<string, RegisterGroupType>();
+  private modules = new Map<string, moduleBDSMType>();
+  private modulesByGroup = new Map<string, moduleBDSMType[]>();
+  private config = new Map<string, boolean>();
   $settingsButton: JQuery<HTMLElement> | null = null;
   $configPannel: JQuery<HTMLElement> | null = null;
 
-  registerGroup(group: any) {
+  registerGroup(group: unknown) {
     if (!isRegisterGroupType(group)) {
       throw new Error("Invalid group");
     }
-    if (
-      this.groups.find((registeredGroup) => registeredGroup.key === group.key)
-    ) {
+    if (this.groups.has(group.key)) {
       console.warn(`Group with key ${group.key} is already registered.`);
       return;
     }
-    this.groups.push(group);
+    this.groups.set(group.key, group);
   }
-  registerModule(module: any) {
+  registerModule(module: unknown) {
     if (!isRegisterModuleType(module)) {
       throw new Error("Invalid module");
     }
-    if (
-      !this.groups.find(
-        (registeredGroup) => registeredGroup.key === module.group
-      )
-    ) {
-      throw new Error(
-        `Group with key ${module.configSchema.baseKey} is not registered.`
-      );
+    const group = this.groups.get(module.group);
+    if (!group) {
+      throw new Error(`Group with key ${module.group} is not registered.`);
     }
-    this.modules.push(module);
-    const moduleKey = StorageHandler.getConfigModuleKey(
+    const moduleIdentifier = this.getModuleIdentifier(
       module.group,
       module.configSchema.baseKey
     );
-    this.config[moduleKey] = StorageHandler.getConfigValue(
-      moduleKey,
-      module.configSchema.default
+    if (this.modules.has(moduleIdentifier)) {
+      console.warn(
+        `Module ${module.group}/${module.configSchema.baseKey} is already registered.`
+      );
+      return;
+    }
+    this.modules.set(moduleIdentifier, module);
+    const modulesInGroup = this.modulesByGroup.get(group.key) ?? [];
+    modulesInGroup.push(module);
+    this.modulesByGroup.set(group.key, modulesInGroup);
+
+    const moduleStorageKey = this.getModuleStorageKey(
+      module.group,
+      module.configSchema.baseKey
     );
-    if (module.configSchema.subSettings) {
-      const configSchemaBaseKey = module.configSchema.baseKey;
-      for (const subSetting of module.configSchema.subSettings) {
-        const subSettingKey = StorageHandler.getConfigSubSettingKey(
-          module.group,
-          configSchemaBaseKey,
-          subSetting.key
-        );
-        this.config[subSettingKey] = StorageHandler.getConfigValue(
-          subSettingKey,
-          subSetting.default
+    this.getConfigValue(moduleStorageKey, module.configSchema.default);
+
+    if (!module.configSchema.subSettings) {
+      return;
+    }
+
+    for (const subSetting of module.configSchema.subSettings) {
+      const subSettingStorageKey = this.getSubSettingStorageKey(
+        module.group,
+        module.configSchema.baseKey,
+        subSetting.key
+      );
+      this.getConfigValue(subSettingStorageKey, subSetting.default);
+    }
+  }
+  runModules() {
+    for (const module of this.modules.values()) {
+      const moduleSettings = this.getModuleSettings(
+        module.group,
+        module.configSchema.baseKey
+      );
+      if (!moduleSettings?.enabled) {
+        continue;
+      }
+      try {
+        module.run(moduleSettings.subSettings);
+      } catch (e) {
+        console.error(
+          `Error running module ${module.configSchema.baseKey}:`,
+          e
         );
       }
     }
   }
-  runModules() {
-    for (const module of this.modules) {
-      const moduleKey = StorageHandler.getConfigModuleKey(
-        module.group,
-        module.configSchema.baseKey
+  getModuleSettings(
+    groupKey: string,
+    baseModuleKey: string
+  ): ModuleSettingsSnapshot | null {
+    const moduleIdentifier = this.getModuleIdentifier(groupKey, baseModuleKey);
+    const module = this.modules.get(moduleIdentifier);
+    if (!module) {
+      console.warn(
+        `Module ${groupKey}/${baseModuleKey} was requested but is not registered.`
       );
-      if (this.config[moduleKey]) {
-        const subSettings = module.configSchema.subSettings?.reduce(
-          (accumulator, subSetting) => {
-            const subSettingKey = StorageHandler.getConfigSubSettingKey(
-              module.group,
-              module.configSchema.baseKey,
-              subSetting.key
-            );
-            accumulator[subSetting.key] = this.config[subSettingKey];
-            return accumulator;
-          },
-          {} as Record<string, boolean>
+      return null;
+    }
+    const moduleStorageKey = this.getModuleStorageKey(groupKey, baseModuleKey);
+    const enabled = this.getConfigValue(
+      moduleStorageKey,
+      module.configSchema.default
+    );
+    const subSettings: Record<string, boolean> = {};
+    for (const subSetting of module.configSchema.subSettings ?? []) {
+      const subSettingStorageKey = this.getSubSettingStorageKey(
+        groupKey,
+        baseModuleKey,
+        subSetting.key
+      );
+      subSettings[subSetting.key] = this.getConfigValue(
+        subSettingStorageKey,
+        subSetting.default
+      );
+    }
+    return {
+      enabled,
+      subSettings,
+    };
+  }
+
+  getAllSettings(): Record<string, Record<string, ModuleSettingsSnapshot>> {
+    const snapshot: Record<string, Record<string, ModuleSettingsSnapshot>> = {};
+    for (const [groupKey, modules] of this.modulesByGroup.entries()) {
+      snapshot[groupKey] = {};
+      for (const module of modules) {
+        const settings = this.getModuleSettings(
+          module.group,
+          module.configSchema.baseKey
         );
-        try {
-          module.run(subSettings);
-        } catch (e) {
-          console.error(
-            `Error running module ${module.configSchema.baseKey}:`,
-            e
-          );
+        if (!settings) {
+          continue;
         }
+        snapshot[groupKey][module.configSchema.baseKey] = {
+          enabled: settings.enabled,
+          subSettings: { ...settings.subSettings },
+        };
       }
     }
+    return snapshot;
+  }
+
+  private getModuleIdentifier(groupKey: string, baseModuleKey: string): string {
+    return `${groupKey}::${baseModuleKey}`;
+  }
+
+  private getModuleStorageKey(groupKey: string, baseModuleKey: string): string {
+    return StorageHandler.getConfigModuleKey(groupKey, baseModuleKey);
+  }
+
+  private getSubSettingStorageKey(
+    groupKey: string,
+    baseModuleKey: string,
+    subSettingKey: string
+  ): string {
+    return StorageHandler.getConfigSubSettingKey(
+      groupKey,
+      baseModuleKey,
+      subSettingKey
+    );
+  }
+
+  private getConfigValue(storageKey: string, fallback: boolean): boolean {
+    if (this.config.has(storageKey)) {
+      return this.config.get(storageKey)!;
+    }
+    const value = StorageHandler.getConfigValue(storageKey, fallback);
+    this.config.set(storageKey, value);
+    return value;
+  }
+
+  private updateConfigValue(storageKey: string, value: boolean): void {
+    this.config.set(storageKey, value);
+    StorageHandler.setConfigValue(storageKey, value);
   }
   addConfigToggles() {
     addHomeStyles();
@@ -138,7 +229,9 @@ export default class BoobStrapper {
       return;
     }
     addConfigPannelStyles();
-    this.$configPannel = $(`<div class="hh-plus-plus-config-panel boob-strapper shown">`);
+    this.$configPannel = $(
+      `<div class="hh-plus-plus-config-panel boob-strapper shown">`
+    );
     this.$settingsButton.after(this.$configPannel);
     const $closeButton = $(`<span class="close-config-panel"></span>`).on(
       "click",
@@ -147,36 +240,42 @@ export default class BoobStrapper {
       }
     );
     this.$configPannel.append($closeButton);
-    const $tabContainer = $(`<div class="tabs hh-scroll"></div>`);
+    const $tabContainer = $(`<div class="tabs boob-strapper hh-scroll"></div>`);
     this.$configPannel.append($tabContainer);
-    for (const group of this.groups) {
+    for (const group of this.groups.values()) {
+      const groupKey = group.key;
       const $groupTab = $(
-        `<h4 class="${group.key}" rel="${group.key}">${group.name}</div>`
+        `<h4 class="${groupKey}" rel="${groupKey}">${group.name}</div>`
       ).on("click", () => {
         $groupTab.siblings().removeClass("selected");
         $groupTab.addClass("selected");
         this.$configPannel
           ?.find(".group-panel")
           .removeClass("shown")
-          .filter(`.group-panel[rel="${group.key}"]`)
+          .filter(`.group-panel[rel="${groupKey}"]`)
           .addClass("shown");
       });
       $tabContainer.append($groupTab);
       const $groupContainer = $(
-        `<div class="group-panel" rel="${group.key}"></div>`
+        `<div class="group-panel" rel="${groupKey}"></div>`
       );
       this.$configPannel.append($groupContainer);
       const $panelContent = $(`<div class="panel-contents hh-scroll"></div>`);
       $groupContainer.append($panelContent);
-      const modulesInGroup = this.modules.filter(
-        (module) => module.group === group.key
-      );
+      const modulesInGroup = this.modulesByGroup.get(groupKey) ?? [];
       for (const module of modulesInGroup) {
-        const moduleKey = StorageHandler.getConfigModuleKey(
+        const moduleKey = this.getModuleStorageKey(
           module.group,
           module.configSchema.baseKey
         );
-        const baseModuleEnabled = this.config[moduleKey];
+        const moduleSettings = this.getModuleSettings(
+          module.group,
+          module.configSchema.baseKey
+        );
+        if (!moduleSettings) {
+          continue;
+        }
+        const baseModuleEnabled = moduleSettings.enabled;
         const $moduleToggleContainer = $(
           `<div class="config-setting ${baseModuleEnabled ? "enabled" : ""} ${
             module.configSchema.subSettings ? "has-subsettings" : ""
@@ -194,12 +293,13 @@ export default class BoobStrapper {
         if (module.configSchema.subSettings) {
           const $subSettingsContainer = $(`<div class="sub-settings"></div>`);
           for (const subSetting of module.configSchema.subSettings) {
-            const subSettingKey = StorageHandler.getConfigSubSettingKey(
+            const subSettingKey = this.getSubSettingStorageKey(
               module.group,
               module.configSchema.baseKey,
               subSetting.key
             );
-            const subSettingEnabled = this.config[subSettingKey];
+            const subSettingEnabled =
+              moduleSettings.subSettings[subSetting.key];
             $subSettingsContainer.append(
               `<label><input type="checkbox" name="${subSettingKey}" ${
                 subSettingEnabled ? 'checked="checked"' : ""
@@ -222,7 +322,7 @@ export default class BoobStrapper {
         const configKeyName = $target.attr("name");
         if (!configKeyName) return;
         const newValue = $target.is(":checked");
-        StorageHandler.setConfigValue(configKeyName, newValue);
+        this.updateConfigValue(configKeyName, newValue);
         console.log("Config changed:", configKeyName, newValue);
         if ($target.parent().hasClass("base-setting")) {
           $target.parent().parent().toggleClass("enabled", newValue);

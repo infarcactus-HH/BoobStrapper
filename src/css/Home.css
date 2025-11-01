@@ -3,21 +3,21 @@
   right: 200px;
   cursor: pointer;
   background-size: contain;
-  background-image: var(--config-button-icon);
+  background-image: url(https://hh.hh-content.com/pictures/gallery/18/200x/274ee3398698f14a0f26550be9e29c2f.webp);
   z-index: 5;
 }
 
 @media (min-width: 1026px) {
   .hh-plus-plus-config-button.boob-strapped {
-    height: 35px;
-    width: 35px;
+    height: 40px;
+    width: 40px;
     top: 56px;
   }
 }
 @media (max-width: 1025px) {
   .hh-plus-plus-config-button.boob-strapped {
-    height: 64px;
-    width: 64px;
+    height: 70px;
+    width: 70px;
     top: 85px;
     right: 140px;
   }
@@ -25,14 +25,14 @@
 
 @media (min-width: 1026px) {
   .hh-plus-plus-config-button.boob-strapped:after {
-    font-size: 20px;
+    font-size: 15px;
     height: 20px;
     line-height: 20px;
   }
 }
 @media (max-width: 1025px) {
   .hh-plus-plus-config-button.boob-strapped:after {
-    font-size: 35px;
+    font-size: 25px;
     height: 40px;
     line-height: 46px;
   }
