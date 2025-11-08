@@ -11,7 +11,7 @@ const packageJson = JSON.parse(
 
 // UserScript header template
 const userscriptHeader = `// ==UserScript==
-// @name         BoobStraper
+// @name         BoobStrapper
 // @namespace    http://tampermonkey.net/
 // @version      ${packageJson.version}
 // @description  ${packageJson.description}
