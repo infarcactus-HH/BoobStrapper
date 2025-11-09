@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         BoobStraper
+// @name         BoobStrapper
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
+// @version      1.1.2
 // @description  
 // @author       infarcactus
 // @license      ISC
