@@ -6,9 +6,9 @@ export default class StorageHandler {
         GM_setValue(key, value);
     }
     static getConfigModuleKey(groupKey: string,moduleKey: string): string {
-        return `Config_${groupKey}_${moduleKey}`;
+        return `${groupKey}_${moduleKey}`;
     }
     static getConfigSubSettingKey(groupKey: string,moduleKey: string, subSettingKey: string): string {
-        return `Config_${groupKey}_${moduleKey}_SubSetting_${subSettingKey}`;
+        return `${groupKey}_${moduleKey}_${subSettingKey}`;
     }
 }
