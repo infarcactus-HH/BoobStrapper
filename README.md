@@ -6,8 +6,6 @@ It's just here to simulate what HH++ BDSM does for loading & registering scripts
 
 It's **not** a 100% replacement of HH++ BDSM some feature are not included so some scripts may still break even with this.
 
-It's planned to grow more than just a simple emulation of HH++ BDSM
-
 ### Why did I make this ?
 Me and others didn't want to make our own script toggling specificly for people that didn't use HH++ bdsm
 
